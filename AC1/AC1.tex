@@ -1,0 +1,80 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage[margin=2cm]{geometry}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.75em}
+
+\title{AC1 \\ {\normalsize\textsc{Optimització i Simulació}}}
+\author{Joan Marcè i Igual}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Problema 3: Consulta mèdica}
+\subsection{Descripció del problema}
+A la consulta de dos metges arriben pacients per fer consultes. El temps entre dues arribades successives segueix una llei exponencial de mitjana 15 minuts. El temps per fer la consulta segueix una llei uniforme entre 20 i 30 minuts. Un cop feta la consulta, el 80\% dels pacients se’ls ha de practicar una prova diagnòstica que dura 10 minuts.
+
+Es vol estudiar el nombre de pacients esperant per consultes i proves, en una jornada de 8 hores.
+
+\subsection{Estats del sistema}
+Com a variables d'estat hi ha les següents amb els seus valors:
+\begin{itemize}
+	\item Pacient
+	\begin{itemize}
+		\item Esperant consulta
+		\item Realitzant consulta
+		\item Esperant prova
+		\item Realitzant prova
+	\end{itemize}
+	\item Metge
+	\begin{itemize}
+		\item Realitzant consulta
+		\item Esperant
+	\end{itemize}
+	\item Màquina diagnosis	
+	\begin{itemize}
+		\item Realitzant prova
+		\item Esperant
+	\end{itemize}
+\end{itemize}
+
+\subsection{Gestió del rellotge}
+En aquest cas només interessa registrar dades cada vegada que té a lloc un esdeveniment pel que la gestió del rellotge serà \textbf{asíncrona}.
+
+\subsection{Esdeveniments que modifiquen l'estat del sistema}
+En aquest cas els esdeveniments que modifiquen l'estat del sistema són:
+\begin{itemize}
+	\item Arribada d'un pacient: 
+	\begin{itemize}
+		\item Si hi ha un metge amb valor \emph{Esperant} assignar pacient al metge, canviar la variable del pacient i del metge a \emph{Realitzant consulta}
+		\item Si no hi ha cap metge amb valor \emph{Esperant} afegir el pacient a la cua d'espera i posar la variable del pacient a \emph{Esperant consulta}
+	\end{itemize}
+	\item Finalització consulta:
+	\begin{itemize}
+		\item Si el pacient atès requereix d'un diagnosis:
+		\begin{itemize}
+			 \item Si la màquina de diagnosis es troba \emph{Esperant} assignar el pacient a la màquina i posar totes dues variables a \emph{Realitzant prova}
+			 \item Si la màquina no es troba \emph{Esperant} posar la variable del pacient a \emph{Esperant prova} i afegir-lo a la cua.
+		\end{itemize}
+		\item Si hi ha més pacients atendre la següent consulta, canviar la variable del nou pacient atès a \emph{Realitzant consulta}
+		\item Si no hi ha més pacients a atendre posar la variable del metge a \emph{Esperant}
+	\end{itemize}
+	\item Finalització d'una prova:
+	\begin{itemize}
+		\item Si no hi ha més pacients \emph{Esperant prova} assignar el valor \emph{Esperant} a la variable màquina.
+		\item Si hi ha més pacients \emph{Esperant} assignar el valor del pacient a \emph{Realitzant prova}.
+	\end{itemize}
+\end{itemize}
+
+\subsection{Comptadors estadístics}
+Com a comptadors estadístics interessa saber el nombre de pacients total que han passat per la consulta, el temps d'espera mitjà per a realitzar una consulta i el temps d'espera mitjà per a realitzar una prova. D'aquesta manera es podrà realitzar l'objectiu de la simulació que és veure el nombre de pacients esperant per realitzar consultes.
+
+
+\section{Problema 4}
+\subsection{Descripció del problema}
+
+
+\end{document}
