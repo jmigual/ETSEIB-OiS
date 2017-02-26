@@ -2,6 +2,7 @@
 
 \usepackage{fontspec}
 \usepackage[margin=2cm]{geometry}
+\usepackage[catalan]{babel}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.75em}
@@ -72,6 +73,7 @@ En aquest cas els esdeveniments que modifiquen l'estat del sistema són:
 \subsection{Comptadors estadístics}
 Com a comptadors estadístics interessa saber el nombre de pacients total que han passat per la consulta, el temps d'espera mitjà per a realitzar una consulta i el temps d'espera mitjà per a realitzar una prova. D'aquesta manera es podrà realitzar l'objectiu de la simulació que és veure el nombre de pacients esperant per realitzar consultes.
 
+\pagebreak
 \section{Problema 4: Política d'inventari}
 \subsection{Descripció del problema}
 Una empresa que ven televisors té una demanda diària aleatòria que segueix una llei normal N(15,3) truncada entre 0 i 25. La demanda no servida per falta d’estoc es subministra al dia següent. Al final de cada dia, l’empresa revisa l’inventari i fa una comanda al seu proveïdor segons la política següent:
@@ -86,9 +88,9 @@ Com a variables d'estat hi ha les següents amb els seus respectius valors:
 \begin{itemize}
 	\item Nombre d'unitats que hi ha a l'inventari (\emph{NInventari})
 	\item Nombre d'unitats pendents de servir (\emph{NServir})
-	\item Demanda
+	\item Demanda, amb les següents propietats:
 	\begin{itemize}
-		\item Estat
+		\item Estat amb els següents possibles valors:
 		\begin{itemize}
 			\item Pendent
 			\item Servida
@@ -108,13 +110,16 @@ En aquest cas els esdeveniments que modifiquen l'estat del sistema són:
 		\item Si hi ha altres comandes amb el valor \emph{Pendent} assignar-li el valor \emph{Pendent} i afegir-la a la cua de comandes.
 		\item Si no hi ha altres comandes amb el valor \emph{Pendent}
 		\begin{itemize}
-			Si el nombre d'unitats a l'inventari és igual o superior al nombre d
+			\item Si $NInventari \ge NDemanda$ llavors $NInventari = NInventari - NDemanda$. I posar la variable \emph{Estat} de la demanda a \emph{Servida}.
+			\item Si $NInventari < NDemanda$ posar la variable \emph{Estat} de la demanda a \emph{Pendent} i afegir-la a la cua de demandes pendents.
 		\end{itemize}
 	\end{itemize}
+	\item Finalització del dia. Cal demanar al proveïdor el nombre d'unitats $NComanda = 20 - NInventari + \sum NDemanda$.
+	\item Inici del dia. Posar $NInventari = NInventari + NComanda$ al arribar la comanda del proveïdor.
 \end{itemize}
 
 \subsection{Comptadors estadístics}
-Com a comptadors estadístics interessa saber el nombre de pacients total que han passat per la consulta, el temps d'espera mitjà per a realitzar una consulta i el temps d'espera mitjà per a realitzar una prova. D'aquesta manera es podrà realitzar l'objectiu de la simulació que és veure el nombre de pacients esperant per realitzar consultes.
+Com que interessa saber la quantitat de demanda no servida per falta d'estoc interessa saber la mitjana diària d'estoc no servit que s'ha so\l.licitat el mateix dia i la mitjana de comandes no servides que s'han so\l.licitat el mateix dia.
 
 
 \end{document}
