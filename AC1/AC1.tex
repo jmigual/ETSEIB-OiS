@@ -72,9 +72,49 @@ En aquest cas els esdeveniments que modifiquen l'estat del sistema són:
 \subsection{Comptadors estadístics}
 Com a comptadors estadístics interessa saber el nombre de pacients total que han passat per la consulta, el temps d'espera mitjà per a realitzar una consulta i el temps d'espera mitjà per a realitzar una prova. D'aquesta manera es podrà realitzar l'objectiu de la simulació que és veure el nombre de pacients esperant per realitzar consultes.
 
-
-\section{Problema 4}
+\section{Problema 4: Política d'inventari}
 \subsection{Descripció del problema}
+Una empresa que ven televisors té una demanda diària aleatòria que segueix una llei normal N(15,3) truncada entre 0 i 25. La demanda no servida per falta d’estoc es subministra al dia següent. Al final de cada dia, l’empresa revisa l’inventari i fa una comanda al seu proveïdor segons la política següent:
+
+(Unitats comanda) = 20 – (unitats en inventari) + (unitats pendents de servir)
+
+El proveïdor serveix la comanda a primera hora del dia següent.
+Es vol estudiar la quantitat de demanda no servida per falta d’estoc.
+
+\subsection{Estats del sistema}
+Com a variables d'estat hi ha les següents amb els seus respectius valors:
+\begin{itemize}
+	\item Nombre d'unitats que hi ha a l'inventari (\emph{NInventari})
+	\item Nombre d'unitats pendents de servir (\emph{NServir})
+	\item Demanda
+	\begin{itemize}
+		\item Estat
+		\begin{itemize}
+			\item Pendent
+			\item Servida
+		\end{itemize}
+		\item Nombre d'unitats a servir (\emph{NDemanda})
+	\end{itemize}
+\end{itemize}
+
+\subsection{Gestió del rellotge}
+En aquest cas només interessa registrar dades cada vegada que té a lloc un esdeveniment pel que la gestió del rellotge serà \textbf{asíncrona}.
+
+\subsection{Esdeveniments que modifiquen l'estat del sistema}
+En aquest cas els esdeveniments que modifiquen l'estat del sistema són:
+\begin{itemize}
+	\item Arribada d'una comanda
+	\begin{itemize}
+		\item Si hi ha altres comandes amb el valor \emph{Pendent} assignar-li el valor \emph{Pendent} i afegir-la a la cua de comandes.
+		\item Si no hi ha altres comandes amb el valor \emph{Pendent}
+		\begin{itemize}
+			Si el nombre d'unitats a l'inventari és igual o superior al nombre d
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\subsection{Comptadors estadístics}
+Com a comptadors estadístics interessa saber el nombre de pacients total que han passat per la consulta, el temps d'espera mitjà per a realitzar una consulta i el temps d'espera mitjà per a realitzar una prova. D'aquesta manera es podrà realitzar l'objectiu de la simulació que és veure el nombre de pacients esperant per realitzar consultes.
 
 
 \end{document}
