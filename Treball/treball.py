@@ -55,6 +55,14 @@ class EsdevenimentArribada(Esdeveniment):
         super(EsdevenimentArribada, self).__init__("Arribada grup passatgers", rellotge)
 
     def esdevenir(self, estat):
+        # try:
+        #     estat.index(True)
+        # except ValueError:
+        #
+        # estat.llista_persones_espera += [rellotge] * self.nombre_passatgers
+        #
+        # return [EsdevenimentArribada(self.rellotge + random.expovariate(1))]
+
         return []
 
 
