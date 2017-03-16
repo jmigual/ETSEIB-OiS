@@ -2,6 +2,7 @@
 
 import Distribucions
 import random
+import abc
 
 
 class Estat:
@@ -18,10 +19,23 @@ class Esdeveniment:
     def __lt__(self, other):
         return self.rellotge < other.rellotge
 
+    @abc.abstractmethod
+    def esdevenir(self, estat):
+        """
+        Executar esdeveniment i crear els esdeveniments derivats
+        :param estat: Estat del sistema
+        :return: Llista d'esdeveniments creats
+        """
+        return []
+
 
 class EsdevenimentFinalitzacio(Esdeveniment):
-    def __init__(self, rellotge):
+    def __init__(self, rellotge, facturador):
         super(EsdevenimentFinalitzacio, self).__init__("Finalitzacio facturacio", rellotge)
+        self.facturador = facturador
+
+    def esdevenir(self, estat):
+        return []
 
 
 class EsdevenimentArribada(Esdeveniment):
@@ -40,6 +54,9 @@ class EsdevenimentArribada(Esdeveniment):
         self.nombre_passatgers = n
         super(EsdevenimentArribada, self).__init__("Arribada grup passatgers", rellotge)
 
+    def esdevenir(self, estat):
+        return []
+
 
 class Simulacio:
     def __init__(self):
@@ -52,12 +69,16 @@ class Simulacio:
         self.llista_esdeveniments.append(EsdevenimentArribada(self.temps_inicial))
 
     # Returns a bool
-    def finalitzar(self):
+    def finalitzar(self, esdeveniment):
         return True
 
     def executa(self):
-        while not self.finalitzar():
-            print("Not ending")
+        esdeveniment = self.obtenir_esdeveniment_proper()
+        while not self.finalitzar(esdeveniment):
+
+            # Executar l'esdevniment i afegir els nous esdeveniments que aquest genera a la llista
+            # d'esdeveniments
+            self.llista_esdeveniments += esdeveniment.esdevenir(self.estat)
 
     def obtenir_esdeveniment_proper(self):
         self.llista_esdeveniments.sort()
