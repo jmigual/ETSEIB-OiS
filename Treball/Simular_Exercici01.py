@@ -147,8 +147,7 @@ def esborrar_esdeveniment_proper():
 def ordenar_llista_esdeveniments():
     global llista_esdeveniments
 
-    llista_esdeveniments.sort(
-        key=lambda tup: tup[0])  # El segon element de la tupla fa referencia al temps
+    llista_esdeveniments.sort(key=lambda tup: tup[0])  # El segon element de la tupla fa referencia al temps
 
 
 Simular_Exercici01()
