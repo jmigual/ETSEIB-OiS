@@ -92,6 +92,9 @@ class Simulacio:
         self.llista_esdeveniments.sort()
         return self.llista_esdeveniments.pop(0)
 
+    def escriure_informacio(self, esdeveniment):
+        pass
+
 
 def main():
     pass
