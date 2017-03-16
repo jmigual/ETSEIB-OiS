@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import Distribucions
 import random
 import abc
+import logging
 
 
-class Estat:
+class Estat(metaclass=abc.ABCMeta):
     def __init__(self, facturadors=12):
         self.llista_persones_espera = []
         self.facturador_lliure = [True]*facturadors
@@ -18,6 +18,9 @@ class Esdeveniment:
 
     def __lt__(self, other):
         return self.rellotge < other.rellotge
+
+    def __str__(self):
+        return "{0:5.1} {1}".format(self.rellotge, self.tipus)
 
     @abc.abstractmethod
     def esdevenir(self, estat):
@@ -35,11 +38,15 @@ class EsdevenimentFinalitzacio(Esdeveniment):
         self.facturador = facturador
 
     def esdevenir(self, estat):
-        return []
+        if len(estat.llista_persones_espera) <= 0:
+            return []
+
+        persona = estat.llista_persones_espera.pop(0)
 
 
 class EsdevenimentArribada(Esdeveniment):
     def __init__(self, rellotge):
+        super(EsdevenimentArribada, self).__init__("Arribada grup passatgers", rellotge)
         y = random.random()
         if y < 0.25:    # Probabilitat 0.25
             n = 1
@@ -52,7 +59,6 @@ class EsdevenimentArribada(Esdeveniment):
         else:           # Probabilitat 0.05
             n = 5
         self.nombre_passatgers = n
-        super(EsdevenimentArribada, self).__init__("Arribada grup passatgers", rellotge)
 
     def esdevenir(self, estat):
         # try:
@@ -72,13 +78,14 @@ class Simulacio:
         self.llista_esdeveniments = []
         self.temps_maxim_simulacio = 100.0
         self.estat = Estat()
+        self.logger = logging.getLogger()
 
         # Afegir esdeveniment inicial arribada
         self.llista_esdeveniments.append(EsdevenimentArribada(self.temps_inicial))
 
     # Returns a bool
     def finalitzar(self, esdeveniment):
-        return True
+        return esdeveniment.rellotge < self.temps_maxim_simulacio
 
     def executa(self):
         esdeveniment = self.obtenir_esdeveniment_proper()
@@ -87,17 +94,36 @@ class Simulacio:
             # Executar l'esdevniment i afegir els nous esdeveniments que aquest genera a la llista
             # d'esdeveniments
             self.llista_esdeveniments += esdeveniment.esdevenir(self.estat)
+            self.escriure_informacio(esdeveniment)
 
     def obtenir_esdeveniment_proper(self):
         self.llista_esdeveniments.sort()
         return self.llista_esdeveniments.pop(0)
 
     def escriure_informacio(self, esdeveniment):
+        self.logger.info(str(esdeveniment) + " " + str(self.estat.facturador_lliure))
         pass
 
 
+def get_default_logger():
+    log = logging.getLogger()
+    log.setLevel(logging.INFO)
+    formatter = logging.Formatter("[%(asctime)s] (%(levelname)s) %(message)s")
+    handler_s = logging.StreamHandler()
+    handler_f = logging.FileHandler("info.log")
+    handler_s.setFormatter(formatter)
+    handler_f.setFormatter(formatter)
+    log.addHandler(handler_s)
+    log.addHandler(handler_f)
+    return log
+
+
 def main():
-    pass
+    logger = get_default_logger()
+    logger.info("Programa iniciat")
+    sim = Simulacio()
+    logger.info("Variables inicialitzades")
+    sim.executa()
 
 
 if __name__ == "__main__":
