@@ -4,25 +4,36 @@ import random
 import abc
 import logging
 import numpy
+import csv
 
 
 class ComptadorEstadistic:
     def __init__(self):
-        self.desviacio = 1
         self.llista_espera = []
+        csvfile = open('error.csv', 'w')
+        self.csv = csv.writer(csvfile, delimiter=',')
+        self.iteration = 1
 
     def error(self):
-        if len(self.llista_espera) < 10:
+        if len(self.llista_espera) < 20:
             return None
 
         # Calcular la desviació estandard dels ultims 10 elements
         desviacio = numpy.std(self.llista_espera[-10:])
-        return abs(self.desviacio - desviacio) / self.desviacio
+        desviacio_total = numpy.std(self.llista_espera)
+        error = abs(desviacio_total - desviacio) / (desviacio_total + 0.0001)
+        return error
 
-    def imprimir_resultats(self):
+    def imprimir_resultats(self, estat):
         logger = logging.getLogger()
-        logger.info("Total de clients    : {:> 5n}".format(len(self.llista_espera)))
-        logger.info("Temps mitja d'espera: {:> 5.3n}".format(numpy.mean(self.llista_espera)))
+        logger.info("Temps final         : {:9.4f}".format(estat.rellotge))
+        logger.info("Error final         : {:9.4f}".format(self.error()))
+        logger.info("Total de clients    : {:9.4f}".format(len(self.llista_espera)))
+        logger.info("Temps mitja d'espera: {:9.4f}".format(numpy.mean(self.llista_espera)))
+
+    def imprimir_estadistiques(self):
+        self.iteration += 1
+        self.csv.writerow([self.iteration, numpy.sum(self.llista_espera), self.llista_espera[-1]])
 
 
 class Estat:
@@ -42,7 +53,7 @@ class Esdeveniment(metaclass=abc.ABCMeta):
         return self.rellotge < other.rellotge
 
     def __str__(self):
-        return "{0:5.1n} {1}".format(self.rellotge, self.tipus)
+        return "Temps: {0:5.1f} {1:<25}".format(self.rellotge, self.tipus)
 
     @abc.abstractmethod
     def esdevenir(self, estat):
@@ -68,6 +79,7 @@ class EsdevenimentFinalitzacio(Esdeveniment):
 
         persona = estat.llista_persones_espera.pop(0)
         estat.stat.llista_espera.append(estat.rellotge - persona)
+        estat.stat.imprimir_estadistiques()
 
         return [EsdevenimentFinalitzacio(self.rellotge + Simulacio.get_temps_facturacio(), self.facturador)]
 
@@ -93,6 +105,7 @@ class EsdevenimentArribada(Esdeveniment):
         p = min(len(facturadors_lliures), self.nombre_passatgers)
         estat.llista_persones_espera += [estat.rellotge] * (self.nombre_passatgers - p)
 
+        estat.stat.llista_espera += [0]*p
         finalitzats = []
         for i in range(p):
             estat.facturador_lliure[facturadors_lliures[i]] = False
@@ -103,8 +116,8 @@ class EsdevenimentArribada(Esdeveniment):
 
 
 class Simulacio:
-    TEMPS_MAXIM_SIMULACIO = 100.0
-    ERROR_MINIM = 0.01
+    TEMPS_MAXIM_SIMULACIO = 2000.0
+    ERROR_MINIM = 0.005
     simulacio_amb_maquines_autofacturacio = False
 
     def __init__(self):
@@ -124,7 +137,7 @@ class Simulacio:
 
         # La simulació s'acaba s'ha arribat al maxim de temps o quan l'error relatiu d'una
         # simulació a l'altra és molt petit
-        return esdeveniment.rellotge > self.TEMPS_MAXIM_SIMULACIO or error < self.ERROR_MINIM
+        return esdeveniment.rellotge > self.TEMPS_MAXIM_SIMULACIO #or error < self.ERROR_MINIM
 
     def executa(self):
         esdeveniment = self.obtenir_esdeveniment_proper()
@@ -137,7 +150,7 @@ class Simulacio:
             # Obtenir el següent esdeveniment
             esdeveniment = self.obtenir_esdeveniment_proper()
 
-        self.estat.stat.imprimir_resultats()
+        self.estat.stat.imprimir_resultats(self.estat)
 
     @staticmethod
     def get_temps_facturacio():
@@ -151,8 +164,7 @@ class Simulacio:
         return self.llista_esdeveniments.pop(0)
 
     def escriure_informacio(self, esdeveniment):
-        self.logger.info(str(esdeveniment) + " " + str(self.estat.facturador_lliure))
-        pass
+        self.logger.debug(str(esdeveniment) + " " + str(self.estat.facturador_lliure))
 
 
 def configure_default_logger():
