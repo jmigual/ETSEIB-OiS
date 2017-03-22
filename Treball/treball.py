@@ -64,7 +64,7 @@ class EsdevenimentFinalitzacio(Esdeveniment):
         persona = estat.llista_persones_espera.pop(0)
         estat.stat.llista_espera.append(estat.rellotge - persona)
 
-        return [EsdevenimentFinalitzacio(self.rellotge + Esdeveniment.get_temps_facturacio(), self.facturador)]
+        return [EsdevenimentFinalitzacio(self.rellotge + Simulacio.get_temps_facturacio(), self.facturador)]
 
 
 class EsdevenimentArribada(Esdeveniment):
@@ -92,7 +92,7 @@ class EsdevenimentArribada(Esdeveniment):
             estat.facturador_lliure[facturadors_lliures[i]] = False
 
         return [EsdevenimentArribada(self.rellotge + random.expovariate(1))] + \
-               [self.rellotge + Esdeveniment.get_temps_facturacio() for i in range(p)]
+               [self.rellotge + Simulacio.get_temps_facturacio() for i in range(p)]
 
 
 class Simulacio:
