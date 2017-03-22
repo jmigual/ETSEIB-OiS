@@ -8,16 +8,16 @@ import numpy
 
 class ComptadorEstadistic:
     def __init__(self):
-        self.variancia = 1
+        self.desviacio = 1
         self.llista_espera = []
 
     def error(self):
         if len(self.llista_espera) < 10:
             return None
 
-        # Calcular la variancia dels ultims 10 elements
-        variancia = numpy.var(self.llista_espera[-10:])
-        return abs(self.variancia - variancia) / self.variancia
+        # Calcular la desviació estandard dels ultims 10 elements
+        desviacio = numpy.std(self.llista_espera[-10:])
+        return abs(self.desviacio - desviacio) / self.desviacio
 
 
 class Estat:
@@ -97,10 +97,12 @@ class EsdevenimentArribada(Esdeveniment):
 
 
 class Simulacio:
+    TEMPS_MAXIM_SIMULACIO = 100.0
+    ERROR_MINIM = 0.01
+
     def __init__(self):
         self.temps_inicial = 0.0
         self.llista_esdeveniments = []
-        self.temps_maxim_simulacio = 100.0
         self.estat = Estat()
         self.logger = logging.getLogger()
 
@@ -113,7 +115,9 @@ class Simulacio:
         if error is None:
             return False
 
-        return esdeveniment.rellotge < self.temps_maxim_simulacio
+        # La simulació s'acaba s'ha arribat al maxim de temps o quan l'error relatiu d'una
+        # simulació a l'altra és molt petit
+        return esdeveniment.rellotge > self.TEMPS_MAXIM_SIMULACIO or error < self.ERROR_MINIM
 
     def executa(self):
         esdeveniment = self.obtenir_esdeveniment_proper()
@@ -132,7 +136,7 @@ class Simulacio:
         pass
 
 
-def get_default_logger():
+def configure_default_logger():
     log = logging.getLogger()
     log.setLevel(logging.INFO)
     formatter = logging.Formatter("[%(asctime)s] (%(levelname)s) %(message)s")
@@ -142,11 +146,10 @@ def get_default_logger():
     handler_f.setFormatter(formatter)
     log.addHandler(handler_s)
     log.addHandler(handler_f)
-    return log
 
 
 def main():
-    logger = get_default_logger()
+    logger = logging.getLogger()
     logger.info("Programa iniciat")
     sim = Simulacio()
     logger.info("Variables inicialitzades")
@@ -154,4 +157,5 @@ def main():
 
 
 if __name__ == "__main__":
+    configure_default_logger()
     main()
