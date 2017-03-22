@@ -19,6 +19,11 @@ class ComptadorEstadistic:
         desviacio = numpy.std(self.llista_espera[-10:])
         return abs(self.desviacio - desviacio) / self.desviacio
 
+    def imprimir_resultats(self):
+        logger = logging.getLogger()
+        logger.info("Total de clients    : {:= 10n}", len(self.llista_espera))
+        logger.info("Temps mitja d'espera: {:= 10n}")
+
 
 class Estat:
     def __init__(self, facturadors=12):
@@ -127,6 +132,8 @@ class Simulacio:
             self.llista_esdeveniments += esdeveniment.esdevenir(self.estat)
             self.escriure_informacio(esdeveniment)
 
+        self.estat.stat.imprimir_resultats()
+
     def obtenir_esdeveniment_proper(self):
         self.llista_esdeveniments.sort()
         return self.llista_esdeveniments.pop(0)
@@ -139,7 +146,7 @@ class Simulacio:
 def configure_default_logger():
     log = logging.getLogger()
     log.setLevel(logging.INFO)
-    formatter = logging.Formatter("[%(asctime)s] (%(levelname)s) %(message)s")
+    formatter = logging.Formatter("[{asctime}s] ({levelname}) {message}", style="{")
     handler_s = logging.StreamHandler()
     handler_f = logging.FileHandler("info.log")
     handler_s.setFormatter(formatter)
@@ -158,4 +165,8 @@ def main():
 
 if __name__ == "__main__":
     configure_default_logger()
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        logging.info("Keyboard Interrupt, finishing")
+        logging.info("Thanks for the ride!")
