@@ -21,8 +21,8 @@ class ComptadorEstadistic:
 
     def imprimir_resultats(self):
         logger = logging.getLogger()
-        logger.info("Total de clients    : {:= 10n}", len(self.llista_espera))
-        logger.info("Temps mitja d'espera: {:= 10n}")
+        logger.info("Total de clients    : {:> 5n}".format(len(self.llista_espera)))
+        logger.info("Temps mitja d'espera: {:> 5.3n}".format(numpy.mean(self.llista_espera)))
 
 
 class Estat:
@@ -42,7 +42,7 @@ class Esdeveniment(metaclass=abc.ABCMeta):
         return self.rellotge < other.rellotge
 
     def __str__(self):
-        return "{0:5.1} {1}".format(self.rellotge, self.tipus)
+        return "{0:5.1n} {1}".format(self.rellotge, self.tipus)
 
     @abc.abstractmethod
     def esdevenir(self, estat):
@@ -133,6 +133,9 @@ class Simulacio:
             # d'esdeveniments
             self.llista_esdeveniments += esdeveniment.esdevenir(self.estat)
             self.escriure_informacio(esdeveniment)
+
+            # Obtenir el següent esdeveniment
+            esdeveniment = self.obtenir_esdeveniment_proper()
 
         self.estat.stat.imprimir_resultats()
 
