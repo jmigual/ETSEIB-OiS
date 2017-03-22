@@ -64,8 +64,7 @@ class EsdevenimentFinalitzacio(Esdeveniment):
         persona = estat.llista_persones_espera.pop(0)
         estat.stat.llista_espera.append(estat.rellotge - persona)
 
-        temps_disponible = numpy.clip(random.gauss(4.0, 1.0), 2, 6)
-        return [EsdevenimentFinalitzacio(self.rellotge + temps_disponible, self.facturador)]
+        return [EsdevenimentFinalitzacio(self.rellotge + Esdeveniment.get_temps_facturacio(), self.facturador)]
 
 
 class EsdevenimentArribada(Esdeveniment):
@@ -85,15 +84,15 @@ class EsdevenimentArribada(Esdeveniment):
         self.nombre_passatgers = n
 
     def esdevenir(self, estat):
-        # try:
-        #     estat.index(True)
-        # except ValueError:
-        #
-        # estat.llista_persones_espera += [rellotge] * self.nombre_passatgers
-        #
-        # return [EsdevenimentArribada(self.rellotge + random.expovariate(1))]
+        facturadors_lliures = [i for i, x in enumerate(estat.facturador_lliure) if x]
+        p = min(len(facturadors_lliures), self.nombre_passatgers)
+        estat.llista_persones_espera += [rellotge] * (n-p)
 
-        return []
+        for i in range(p):
+            estat.facturador_lliure[facturadors_lliures[i]] = False
+
+        return [EsdevenimentArribada(self.rellotge + random.expovariate(1))] + \
+               [self.rellotge + Esdeveniment.get_temps_facturacio() for i in range(p)]
 
 
 class Simulacio:
@@ -122,6 +121,15 @@ class Simulacio:
             # d'esdeveniments
             self.llista_esdeveniments += esdeveniment.esdevenir(self.estat)
             self.escriure_informacio(esdeveniment)
+
+    simulacio_amb_maquines_autofacturacio = False
+
+    @staticmethod
+    def get_temps_facturacio():
+        if Simulacio.simulacio_amb_maquines_autofacturacio:
+            return random.uniform(4, 10)
+        else:
+            return numpy.clip(random.gauss(4.0, 1.0), 2, 6)
 
     def obtenir_esdeveniment_proper(self):
         self.llista_esdeveniments.sort()
