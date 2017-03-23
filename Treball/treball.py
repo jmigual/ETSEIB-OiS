@@ -53,7 +53,7 @@ def main():
     if not os.path.exists(carpeta_sortida):
         os.makedirs(carpeta_sortida)
 
-    total_file_name = carpeta_sortida + "resultats_simulacio_{}.csv".format(tipus)
+    total_file_name = carpeta_sortida + "simulacio_{}.csv".format(tipus)
 
     if not os.path.exists(total_file_name):
         csv_file = open(total_file_name, 'w')
