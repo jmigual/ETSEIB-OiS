@@ -22,13 +22,15 @@ def main():
     maquines = False
     facturadors = 12
 
+    # Parsejar els arguments del programa
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "n:i:dfm")
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "hn:i:dfm", ["help"])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err)  # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
+
     for o, a in opts:
         if o == "-i":
             iteracions = int(a)
@@ -40,6 +42,9 @@ def main():
             maquines = False
         elif o == "-m":
             maquines = True
+        elif o in ["-h", "--help"]:
+            usage()
+            sys.exit(0)
         else:
             assert False, "unhandled option"
 
