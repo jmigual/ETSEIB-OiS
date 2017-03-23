@@ -48,11 +48,12 @@ def main():
         else:
             assert False, "unhandled option"
 
+    tipus = "maquines" if maquines else "agents"
     carpeta_sortida = "resultats/"
     if not os.path.exists(carpeta_sortida):
         os.makedirs(carpeta_sortida)
 
-    total_file_name = carpeta_sortida + "simulation_results.csv"
+    total_file_name = carpeta_sortida + "resultats_simulacio_{}.csv".format(tipus)
 
     if not os.path.exists(total_file_name):
         csv_file = open(total_file_name, 'w')
@@ -61,7 +62,6 @@ def main():
         csv_file.close()
 
     logger = logging.getLogger()
-    tipus = "maquines" if maquines else "agents"
     logger.info("Tipus facturadors    : {}".format(tipus))
     logger.info("Nombre de facturadors: {}".format(facturadors))
     logger.info("Nombre d'iteracions  : {}".format(iteracions))
