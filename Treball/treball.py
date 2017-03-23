@@ -43,31 +43,50 @@ def main():
         else:
             assert False, "unhandled option"
 
+    carpeta_sortida = "resultats/"
+    if not os.path.exists(carpeta_sortida):
+        os.makedirs(carpeta_sortida)
+
+    total_file_name = carpeta_sortida + "simulation_results.csv"
+
+    if not os.path.exists(total_file_name):
+        csv_file = open(total_file_name, 'w')
+        csv_writer = csv.writer(csv_file, delimiter=',')
+        csv_writer.writerow(["mitjana", "mitjana", "desviacio", "clients", "b", "a"])
+        csv_file.close()
+
     logger = logging.getLogger()
     tipus = "maquines" if maquines else "agents"
     logger.info("Tipus facturadors    : {}".format(tipus))
     logger.info("Nombre de facturadors: {}".format(facturadors))
     logger.info("Nombre d'iteracions  : {}".format(iteracions))
 
-    nom_arxiu = "simulacio_{}_{}_{}.csv".format(tipus, facturadors, iteracions)
+    nom_arxiu = carpeta_sortida + "simulacio_{}_{}_{}.csv".format(tipus, facturadors, iteracions)
     logger.info("Resultats a          : {}".format(nom_arxiu))
 
     with open(nom_arxiu, mode='w') as file:
         csv_file = csv.writer(file, delimiter=',')
         csv_file.writerow(["Mitjana", "Desviació", "Clients", "b", "a"])
 
+    resultats = []
     for i in range(iteracions):
         logger.info("***************************")
         logger.info("Simulació {} iniciada".format(i))
         sim = Simulacio(nom_arxiu, maquines, facturadors)
         logger.info("Variables inicialitzades")
-        sim.executa()
+        resultats.append(sim.executa())
         logger.info("Simulació {} finalitzada".format(i))
+
+    resultats = [[x[i] for x in resultats] for i in range(len(resultats[0]))]
+    average = numpy.average(resultats, 1)
+    with open(total_file_name) as csv_file:
+        csv_writer = csv.writer(csv_file, delimiter=',')
+        csv_writer.writerow(average)
+
     logger.info("")
     logger.info("")
 
 
-configure_default_logger()
 if __name__ == "__main__":
     try:
         main()
