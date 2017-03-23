@@ -154,7 +154,7 @@ class EsdevenimentArribada(Esdeveniment):
 
 
 class Simulacio:
-    TEMPS_MAXIM_SIMULACIO = 2000.0
+    TEMPS_MAXIM_SIMULACIO = 8*60.0
     ERROR_MINIM = 0.005
     simulacio_amb_maquines_autofacturacio = False
 
