@@ -57,7 +57,7 @@ def main():
     if not os.path.exists(total_file_name):
         csv_file = open(total_file_name, 'w')
         csv_writer = csv.writer(csv_file, delimiter=',')
-        csv_writer.writerow(["mitjana", "mitjana", "desviacio", "clients", "b", "a"])
+        csv_writer.writerow(["facturadors", "mitjana", "desviacio", "clients", "b", "a"])
         csv_file.close()
 
     logger = logging.getLogger()
@@ -79,14 +79,13 @@ def main():
         logger.info("Simulació {} iniciada".format(i))
         sim = Simulacio(nom_arxiu, maquines, facturadors)
         logger.info("Variables inicialitzades")
-        resultats.append(sim.executa())
+        resultats.append([facturadors] + sim.executa())
         logger.info("Simulació {} finalitzada".format(i))
 
-    resultats = [[x[i] for x in resultats] for i in range(len(resultats[0]))]
-    average = numpy.average(resultats, 1)
-    with open(total_file_name) as csv_file:
+    with open(total_file_name, 'a') as csv_file:
         csv_writer = csv.writer(csv_file, delimiter=',')
-        csv_writer.writerow(average)
+        for resultat in resultats:
+            csv_writer.writerow(resultat)
 
     logger.info("")
     logger.info("")
