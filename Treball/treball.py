@@ -37,7 +37,7 @@ class ComptadorEstadistic:
 
 
 class Estat:
-    def __init__(self, facturadors=12):
+    def __init__(self, facturadors=16):
         self.llista_persones_espera = []
         self.facturador_lliure = [True] * facturadors
         self.rellotge = 0
@@ -118,7 +118,7 @@ class EsdevenimentArribada(Esdeveniment):
 class Simulacio:
     TEMPS_MAXIM_SIMULACIO = 2000.0
     ERROR_MINIM = 0.005
-    simulacio_amb_maquines_autofacturacio = False
+    simulacio_amb_maquines_autofacturacio = True
 
     def __init__(self):
         self.temps_inicial = 0.0
