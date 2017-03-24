@@ -66,7 +66,7 @@ def main():
     logger.info("Nombre de facturadors: {}".format(facturadors))
     logger.info("Nombre d'iteracions  : {}".format(iteracions))
 
-    nom_arxiu = carpeta_sortida + "simulacio_{}_{}_{}.csv".format(tipus, facturadors, iteracions)
+    nom_arxiu = carpeta_sortida + "simulacio_{}_{}.csv".format(tipus, facturadors)
     logger.info("Resultats a          : {}".format(nom_arxiu))
 
     with open(nom_arxiu, mode='w') as file:
