@@ -1,0 +1,25 @@
+L'arxiu que conté el programa de la simulacio és el treball.py
+
+Per poder executar-lo cal python3 i el paquet numpy instal·lat.
+
+La comanda per executar la simulació amb 1 repetició, 12 agents facturadors és:
+> python3 treball.py -i 1 -n 12 -f
+
+Si es volen usar màquines d'autofacturació en lloc d'agents facturadors la comanda és la següent:
+> python3 treball.py -i 1 -n 12 -m
+
+Si es volen fer repeticions del mateix estat només cal canviar el paràmetre després de -i, per
+exemple per 16 repeticions amb 12 màquines d'autofacturació la comanda és la següent:
+> python3 treball.py -i 16 -n 12 -m
+
+Addicionalment es pot mirar el help del programa executant:
+> python3 treball.py -h
+
+Que dóna la següent informació:
+Usage:
+python3 treball.py [-n nombre][-i nombre][-f|-m][-d]
+-i    Nombre de vegades que s'ha d'executar la simulació
+-n    Nombre facturadors o màquines facturadores
+-f    Usar agents facturadors
+-m    Usar màquines facturadores
+-d    Activar mode debug
