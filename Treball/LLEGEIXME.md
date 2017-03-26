@@ -1,1 +1,1 @@
-L'arxiu que conte el programa de la simulacio es el treball.py
+L'arxiu que conté el programa de la simulacio es el treball.py
